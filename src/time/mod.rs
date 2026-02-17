@@ -2,6 +2,7 @@ use chrono::{Local, Timelike};
 
 pub struct TimeInfo {
     pub hour: u32,
+    pub hour24: u32,
     pub minute: u32,
     pub is_pm: bool,
 }
@@ -20,6 +21,7 @@ pub fn get_current_time() -> TimeInfo {
     
     TimeInfo {
         hour: hour12,
+        hour24,
         minute,
         is_pm,
     }

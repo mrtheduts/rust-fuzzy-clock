@@ -21,7 +21,7 @@ fn main() {
     
     let current_time = time::get_current_time();
     let translator = get_translator(language);
-    let fuzzy_time = translator.translate(&current_time, fuzzyness);
+    let fuzzy_time = translator.translate(&current_time, fuzzyness, args.hour_24);
     
     println!("{}", fuzzy_time);
 }

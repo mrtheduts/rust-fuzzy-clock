@@ -25,7 +25,7 @@ impl FuzzynessLevel {
 }
 
 pub trait TimeTranslator {
-    fn translate(&self, time: &TimeInfo, level: FuzzynessLevel) -> String;
+    fn translate(&self, time: &TimeInfo, level: FuzzynessLevel, use_24h: bool) -> String;
 }
 
 pub enum Language {

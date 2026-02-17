@@ -6,6 +6,7 @@ A CLI application that translates the current time into natural English text.
 ## Features
 
 - 🕐 Converts system time to natural language with multiple fuzzyness levels
+- ⏰ **Dual time format support**: Choose between 12-hour (with AM/PM) or 24-hour format
 - 🌍 **Three languages supported**:
   - English
   - Spanish (Latin American)
@@ -15,7 +16,7 @@ A CLI application that translates the current time into natural English text.
   - `fuzzy`: Natural expressions (e.g., "quarter to four PM")
   - `very-fuzzy`: Approximate time (e.g., "about quarter to four")
   - `max-fuzzy`: Time period only (e.g., "morning", "afternoon", "evening", "night")
-- ⏰ Timezone-aware (uses system local time)
+- ⏱️ Timezone-aware (uses system local time)
 - 🎯 Extensible architecture for adding more languages
 - ⚡ Fast and lightweight
 
@@ -61,6 +62,10 @@ rust-fuzzy-clock --language english --fuzzyness exact
     - "afternoon" (12 PM - 4:59 PM)
     - "evening" (5 PM - 9 PM)
     - "night" (9 PM - 4:59 AM)
+
+- `--24-hour`: Use 24-hour format instead of 12-hour with AM/PM (default: 12-hour)
+  - When enabled, removes AM/PM suffix and uses hours 0-23
+  - Works with all languages and fuzzyness levels (except max-fuzzy which uses period names)
   
 - `-h, --help`: Print help information
 
@@ -68,47 +73,53 @@ rust-fuzzy-clock --language english --fuzzyness exact
 
 #### English
 ```bash
+# 12-hour format (default)
 $ rust-fuzzy-clock --language english --fuzzyness exact
 three forty-seven PM
 
 $ rust-fuzzy-clock -l en -f fuzzy
 quarter past nine AM
 
-$ rust-fuzzy-clock -l en -f very-fuzzy
-about half past three
+# 24-hour format
+$ rust-fuzzy-clock -l en -f exact --24-hour
+fifteen forty-seven
 
-$ rust-fuzzy-clock -l en -f max-fuzzy
-afternoon
+$ rust-fuzzy-clock -l en -f fuzzy --24-hour
+quarter past nine
 ```
 
 #### Spanish (Latin American)
 ```bash
+# 12-hour format (default)
 $ rust-fuzzy-clock --language spanish --fuzzyness exact
 tres cuarenta y siete PM
 
 $ rust-fuzzy-clock -l es -f fuzzy
 nueve y cuarto AM
 
-$ rust-fuzzy-clock -l español -f very-fuzzy
-como tres y media
+# 24-hour format
+$ rust-fuzzy-clock -l es -f exact --24-hour
+quince cuarenta y siete
 
-$ rust-fuzzy-clock -l es -f max-fuzzy
-tarde
+$ rust-fuzzy-clock -l español -f fuzzy --24-hour
+nueve y cuarto
 ```
 
 #### Portuguese (Brazilian)
 ```bash
+# 12-hour format (default)
 $ rust-fuzzy-clock --language portuguese --fuzzyness exact
 três quarenta e sete PM
 
 $ rust-fuzzy-clock -l pt -f fuzzy
 nove e quinze da manhã
 
-$ rust-fuzzy-clock -l português -f very-fuzzy
-por volta de três e meia
+# 24-hour format
+$ rust-fuzzy-clock -l pt -f exact --24-hour
+quinze quarenta e sete
 
-$ rust-fuzzy-clock -l pt -f max-fuzzy
-tarde
+$ rust-fuzzy-clock -l português -f fuzzy --24-hour
+nove e quinze
 ```
 
 ## Architecture

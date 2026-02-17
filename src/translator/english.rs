@@ -80,67 +80,99 @@ impl EnglishTranslator {
 }
 
 impl TimeTranslator for EnglishTranslator {
-    fn translate(&self, time: &TimeInfo, level: FuzzynessLevel) -> String {
+    fn translate(&self, time: &TimeInfo, level: FuzzynessLevel, use_24h: bool) -> String {
         match level {
-            FuzzynessLevel::Exact => self.translate_exact(time),
-            FuzzynessLevel::Fuzzy => self.translate_fuzzy(time),
-            FuzzynessLevel::VeryFuzzy => self.translate_very_fuzzy(time),
+            FuzzynessLevel::Exact => self.translate_exact(time, use_24h),
+            FuzzynessLevel::Fuzzy => self.translate_fuzzy(time, use_24h),
+            FuzzynessLevel::VeryFuzzy => self.translate_very_fuzzy(time, use_24h),
             FuzzynessLevel::MaxFuzzy => self.translate_max_fuzzy(time),
         }
     }
 }
 
 impl EnglishTranslator {
-    fn translate_exact(&self, time: &TimeInfo) -> String {
-        let hour_word = Self::number_to_word(time.hour);
-        let minute_word = Self::format_minute(time.minute);
-        let period = if time.is_pm { "PM" } else { "AM" };
-        
-        format!("{} {} {}", hour_word, minute_word, period)
+    fn translate_exact(&self, time: &TimeInfo, use_24h: bool) -> String {
+        if use_24h {
+            let hour_word = Self::number_to_word(time.hour24);
+            let minute_word = Self::format_minute(time.minute);
+            format!("{} {}", hour_word, minute_word)
+        } else {
+            let hour_word = Self::number_to_word(time.hour);
+            let minute_word = Self::format_minute(time.minute);
+            let period = if time.is_pm { "PM" } else { "AM" };
+            format!("{} {} {}", hour_word, minute_word, period)
+        }
     }
     
-    fn translate_fuzzy(&self, time: &TimeInfo) -> String {
-        let period = if time.is_pm { "PM" } else { "AM" };
+    fn translate_fuzzy(&self, time: &TimeInfo, use_24h: bool) -> String {
+        let hour = if use_24h { time.hour24 } else { time.hour };
+        let period = if use_24h { "" } else if time.is_pm { " PM" } else { " AM" };
         
         match time.minute {
-            0 => format!("{} o'clock", Self::number_to_word(time.hour)),
-            15 => format!("quarter past {} {}", Self::number_to_word(time.hour), period),
-            30 => format!("half past {} {}", Self::number_to_word(time.hour), period),
+            0 => format!("{} o'clock", Self::number_to_word(hour)),
+            15 => format!("quarter past {}{}", Self::number_to_word(hour), period),
+            30 => format!("half past {}{}", Self::number_to_word(hour), period),
             45 => {
-                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
-                format!("quarter to {} {}", Self::number_to_word(next_hour), period)
+                let next_hour = if use_24h {
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else {
+                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                };
+                format!("quarter to {}{}", Self::number_to_word(next_hour), period)
             },
-            1..=7 => format!("{} past {} {}", Self::number_to_word(time.minute), Self::number_to_word(time.hour), period),
-            8..=14 => format!("about quarter past {} {}", Self::number_to_word(time.hour), period),
-            16..=22 => format!("about twenty past {} {}", Self::number_to_word(time.hour), period),
-            23..=29 => format!("almost half past {} {}", Self::number_to_word(time.hour), period),
-            31..=37 => format!("about half past {} {}", Self::number_to_word(time.hour), period),
+            1..=7 => format!("{} past {}{}", Self::number_to_word(time.minute), Self::number_to_word(hour), period),
+            8..=14 => format!("about quarter past {}{}", Self::number_to_word(hour), period),
+            16..=22 => format!("about twenty past {}{}", Self::number_to_word(hour), period),
+            23..=29 => format!("almost half past {}{}", Self::number_to_word(hour), period),
+            31..=37 => format!("about half past {}{}", Self::number_to_word(hour), period),
             38..=44 => {
-                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
-                format!("almost quarter to {} {}", Self::number_to_word(next_hour), period)
+                let next_hour = if use_24h {
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else {
+                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                };
+                format!("almost quarter to {}{}", Self::number_to_word(next_hour), period)
             },
             46..=52 => {
-                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
-                format!("about quarter to {} {}", Self::number_to_word(next_hour), period)
+                let next_hour = if use_24h {
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else {
+                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                };
+                format!("about quarter to {}{}", Self::number_to_word(next_hour), period)
             },
             _ => {
-                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                let next_hour = if use_24h {
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else {
+                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                };
                 format!("almost {} o'clock", Self::number_to_word(next_hour))
             }
         }
     }
     
-    fn translate_very_fuzzy(&self, time: &TimeInfo) -> String {
+    fn translate_very_fuzzy(&self, time: &TimeInfo, use_24h: bool) -> String {
+        let hour = if use_24h { time.hour24 } else { time.hour };
+        
         match time.minute {
-            0..=7 => format!("{} o'clock", Self::number_to_word(time.hour)),
-            8..=22 => format!("about quarter past {}", Self::number_to_word(time.hour)),
-            23..=37 => format!("about half past {}", Self::number_to_word(time.hour)),
+            0..=7 => format!("{} o'clock", Self::number_to_word(hour)),
+            8..=22 => format!("about quarter past {}", Self::number_to_word(hour)),
+            23..=37 => format!("about half past {}", Self::number_to_word(hour)),
             38..=52 => {
-                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                let next_hour = if use_24h {
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else {
+                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                };
                 format!("about quarter to {}", Self::number_to_word(next_hour))
             },
             _ => {
-                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                let next_hour = if use_24h {
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else {
+                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                };
                 format!("almost {} o'clock", Self::number_to_word(next_hour))
             }
         }
