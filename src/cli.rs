@@ -5,7 +5,7 @@ use clap::Parser;
 #[command(about = "A fuzzy clock that translates time into natural language", long_about = None)]
 pub struct Args {
     #[arg(short, long, default_value = "english")]
-    #[arg(help = "Language for time translation (english)")]
+    #[arg(help = "Language for time translation (english, spanish, portuguese)")]
     pub language: String,
     
     #[arg(short, long, default_value = "exact")]

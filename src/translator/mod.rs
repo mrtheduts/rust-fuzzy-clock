@@ -1,4 +1,6 @@
 pub mod english;
+pub mod spanish;
+pub mod portuguese;
 
 use crate::time::TimeInfo;
 
@@ -28,12 +30,16 @@ pub trait TimeTranslator {
 
 pub enum Language {
     English,
+    Spanish,
+    Portuguese,
 }
 
 impl Language {
     pub fn from_str(s: &str) -> Option<Self> {
         match s.to_lowercase().as_str() {
             "english" | "en" => Some(Language::English),
+            "spanish" | "es" | "español" => Some(Language::Spanish),
+            "portuguese" | "pt" | "português" => Some(Language::Portuguese),
             _ => None,
         }
     }
@@ -42,5 +48,7 @@ impl Language {
 pub fn get_translator(language: Language) -> Box<dyn TimeTranslator> {
     match language {
         Language::English => Box::new(english::EnglishTranslator),
+        Language::Spanish => Box::new(spanish::SpanishTranslator),
+        Language::Portuguese => Box::new(portuguese::PortugueseTranslator),
     }
 }
