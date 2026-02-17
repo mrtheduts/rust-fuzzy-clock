@@ -9,7 +9,7 @@ pub struct Args {
     pub language: String,
     
     #[arg(short, long, default_value = "exact")]
-    #[arg(help = "Level of fuzzyness (exact)")]
+    #[arg(help = "Level of fuzzyness (exact, fuzzy, very-fuzzy, max-fuzzy)")]
     pub fuzzyness: String,
 }
 

@@ -80,11 +80,86 @@ impl EnglishTranslator {
 }
 
 impl TimeTranslator for EnglishTranslator {
-    fn translate(&self, time: &TimeInfo, _level: FuzzynessLevel) -> String {
+    fn translate(&self, time: &TimeInfo, level: FuzzynessLevel) -> String {
+        match level {
+            FuzzynessLevel::Exact => self.translate_exact(time),
+            FuzzynessLevel::Fuzzy => self.translate_fuzzy(time),
+            FuzzynessLevel::VeryFuzzy => self.translate_very_fuzzy(time),
+            FuzzynessLevel::MaxFuzzy => self.translate_max_fuzzy(time),
+        }
+    }
+}
+
+impl EnglishTranslator {
+    fn translate_exact(&self, time: &TimeInfo) -> String {
         let hour_word = Self::number_to_word(time.hour);
         let minute_word = Self::format_minute(time.minute);
         let period = if time.is_pm { "PM" } else { "AM" };
         
         format!("{} {} {}", hour_word, minute_word, period)
+    }
+    
+    fn translate_fuzzy(&self, time: &TimeInfo) -> String {
+        let period = if time.is_pm { "PM" } else { "AM" };
+        
+        match time.minute {
+            0 => format!("{} o'clock", Self::number_to_word(time.hour)),
+            15 => format!("quarter past {} {}", Self::number_to_word(time.hour), period),
+            30 => format!("half past {} {}", Self::number_to_word(time.hour), period),
+            45 => {
+                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                format!("quarter to {} {}", Self::number_to_word(next_hour), period)
+            },
+            1..=7 => format!("{} past {} {}", Self::number_to_word(time.minute), Self::number_to_word(time.hour), period),
+            8..=14 => format!("about quarter past {} {}", Self::number_to_word(time.hour), period),
+            16..=22 => format!("about twenty past {} {}", Self::number_to_word(time.hour), period),
+            23..=29 => format!("almost half past {} {}", Self::number_to_word(time.hour), period),
+            31..=37 => format!("about half past {} {}", Self::number_to_word(time.hour), period),
+            38..=44 => {
+                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                format!("almost quarter to {} {}", Self::number_to_word(next_hour), period)
+            },
+            46..=52 => {
+                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                format!("about quarter to {} {}", Self::number_to_word(next_hour), period)
+            },
+            _ => {
+                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                format!("almost {} o'clock", Self::number_to_word(next_hour))
+            }
+        }
+    }
+    
+    fn translate_very_fuzzy(&self, time: &TimeInfo) -> String {
+        match time.minute {
+            0..=7 => format!("{} o'clock", Self::number_to_word(time.hour)),
+            8..=22 => format!("about quarter past {}", Self::number_to_word(time.hour)),
+            23..=37 => format!("about half past {}", Self::number_to_word(time.hour)),
+            38..=52 => {
+                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                format!("about quarter to {}", Self::number_to_word(next_hour))
+            },
+            _ => {
+                let next_hour = if time.hour == 12 { 1 } else { time.hour + 1 };
+                format!("almost {} o'clock", Self::number_to_word(next_hour))
+            }
+        }
+    }
+    
+    fn translate_max_fuzzy(&self, time: &TimeInfo) -> String {
+        let hour24 = if time.is_pm && time.hour != 12 {
+            time.hour + 12
+        } else if !time.is_pm && time.hour == 12 {
+            0
+        } else {
+            time.hour
+        };
+        
+        match hour24 {
+            5..=11 => "morning".to_string(),
+            12..=16 => "afternoon".to_string(),
+            17..=21 => "evening".to_string(),
+            _ => "night".to_string(),
+        }
     }
 }

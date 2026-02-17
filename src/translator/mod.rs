@@ -5,12 +5,18 @@ use crate::time::TimeInfo;
 #[derive(Debug, Clone, Copy)]
 pub enum FuzzynessLevel {
     Exact,
+    Fuzzy,
+    VeryFuzzy,
+    MaxFuzzy,
 }
 
 impl FuzzynessLevel {
     pub fn from_str(s: &str) -> Option<Self> {
         match s.to_lowercase().as_str() {
             "exact" => Some(FuzzynessLevel::Exact),
+            "fuzzy" => Some(FuzzynessLevel::Fuzzy),
+            "very-fuzzy" => Some(FuzzynessLevel::VeryFuzzy),
+            "max-fuzzy" => Some(FuzzynessLevel::MaxFuzzy),
             _ => None,
         }
     }

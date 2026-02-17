@@ -5,9 +5,14 @@ A CLI application that translates the current time into natural English text.
 
 ## Features
 
-- 🕐 Converts system time to natural language (e.g., "three forty-seven PM")
+- 🕐 Converts system time to natural language with multiple fuzzyness levels
+- 🎚️ **Four fuzzyness levels**:
+  - `exact`: Word-for-word translation (e.g., "three forty-seven PM")
+  - `fuzzy`: Natural expressions (e.g., "quarter to four PM")
+  - `very-fuzzy`: Approximate time (e.g., "about quarter to four")
+  - `max-fuzzy`: Time period only (e.g., "morning", "afternoon", "evening", "night")
 - 🌍 Timezone-aware (uses system local time)
-- 🎯 Extensible architecture for multiple languages and fuzzyness levels
+- 🎯 Extensible architecture for multiple languages
 - ⚡ Fast and lightweight
 
 ## Installation
@@ -41,24 +46,51 @@ rust-fuzzy-clock --language english --fuzzyness exact
   - Currently supported: `english`, `en`
   
 - `-f, --fuzzyness <FUZZYNESS>`: Level of fuzzyness (default: `exact`)
-  - Currently supported: `exact` (word-for-word translation, ignoring seconds)
+  - `exact`: Word-for-word time translation, ignoring seconds (e.g., "three forty-seven PM")
+  - `fuzzy`: Natural time expressions (e.g., "quarter past three PM", "half past nine AM")
+  - `very-fuzzy`: Approximate descriptions (e.g., "about quarter to four", "almost noon")
+  - `max-fuzzy`: Time period only based on hour:
+    - "morning" (5 AM - 11:59 AM)
+    - "afternoon" (12 PM - 4:59 PM)
+    - "evening" (5 PM - 9 PM)
+    - "night" (9 PM - 4:59 AM)
   
 - `-h, --help`: Print help information
 
 ### Examples
 
 ```bash
-# Current time at 3:47 PM
+# Exact level - word-for-word translation
 $ rust-fuzzy-clock
 three forty-seven PM
 
-# Current time at 12:05 AM
-$ rust-fuzzy-clock
+$ rust-fuzzy-clock --fuzzyness exact
 twelve oh five AM
 
-# With explicit options
-$ rust-fuzzy-clock --language english --fuzzyness exact
-nine twenty-three AM
+# Fuzzy level - natural expressions
+$ rust-fuzzy-clock --fuzzyness fuzzy
+quarter past nine AM
+
+$ rust-fuzzy-clock -f fuzzy
+half past three PM
+
+# Very fuzzy level - approximate time
+$ rust-fuzzy-clock --fuzzyness very-fuzzy
+about quarter to four
+
+$ rust-fuzzy-clock -f very-fuzzy
+almost noon
+
+# Max fuzzy level - time period only
+$ rust-fuzzy-clock --fuzzyness max-fuzzy
+morning
+
+$ rust-fuzzy-clock -f max-fuzzy
+evening
+
+# With explicit language
+$ rust-fuzzy-clock --language english --fuzzyness fuzzy
+quarter to four PM
 ```
 
 ## Architecture
@@ -73,11 +105,9 @@ The project is organized into modular components:
 ## Future Enhancements
 
 - Additional languages (Portuguese, Spanish, etc.)
-- More fuzzyness levels:
-  - `fuzzy`: "quarter to four", "half past three"
-  - `very-fuzzy`: "about four o'clock", "around noon"
 - Timezone override option
 - 24-hour format support
+- Configurable time period ranges for max-fuzzy mode
 
 ## Dependencies
 
