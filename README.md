@@ -1,4 +1,7 @@
 # rust-fuzzy-clock
+
+[![CI](https://github.com/mrtheduts/rust-fuzzy-clock/actions/workflows/ci.yml/badge.svg)](https://github.com/mrtheduts/rust-fuzzy-clock/actions/workflows/ci.yml)
+
 Fuzzy clock in rust!
 
 A CLI application that translates the current time into natural English text.
