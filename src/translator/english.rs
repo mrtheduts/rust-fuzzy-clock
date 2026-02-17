@@ -170,13 +170,11 @@ impl EnglishTranslator {
             ),
             45 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -223,13 +221,11 @@ impl EnglishTranslator {
             ),
             38..=44 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -245,13 +241,11 @@ impl EnglishTranslator {
             }
             46..=52 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -267,13 +261,11 @@ impl EnglishTranslator {
             }
             _ => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 format!("almost {} o'clock", Self::number_to_word(next_hour))
             }
@@ -302,13 +294,11 @@ impl EnglishTranslator {
             ),
             38..=52 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -323,13 +313,11 @@ impl EnglishTranslator {
             }
             _ => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 format!("almost {} o'clock", Self::number_to_word(next_hour))
             }

@@ -14,18 +14,28 @@ fn get_bin_path() -> PathBuf {
     let target_dir =
         std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| format!("{}/target", manifest_dir));
 
+    // Binary name with platform-specific extension
+    let binary_name = if cfg!(windows) {
+        "rust-fuzzy-clock.exe"
+    } else {
+        "rust-fuzzy-clock"
+    };
+
     // Try debug build first, then release
-    let debug_path = PathBuf::from(&target_dir).join("debug/rust-fuzzy-clock");
+    let debug_path = PathBuf::from(&target_dir).join("debug").join(binary_name);
     if debug_path.exists() {
         return debug_path;
     }
 
-    let release_path = PathBuf::from(&target_dir).join("release/rust-fuzzy-clock");
+    let release_path = PathBuf::from(&target_dir).join("release").join(binary_name);
     if release_path.exists() {
         return release_path;
     }
 
-    panic!("Could not find rust-fuzzy-clock binary in {:?}", target_dir);
+    panic!(
+        "Could not find {} binary in {:?}",
+        binary_name, target_dir
+    );
 }
 
 #[test]
@@ -44,7 +54,7 @@ fn test_cli_default_options() {
 #[test]
 fn test_cli_english_exact() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "english", "-f", "exact"])
+        .args(["-l", "english", "-f", "exact"])
         .output()
         .expect("Failed to execute command");
 
@@ -56,7 +66,7 @@ fn test_cli_english_exact() {
 #[test]
 fn test_cli_24_hour_format() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "english", "-f", "exact", "--24-hour"])
+        .args(["-l", "english", "-f", "exact", "--24-hour"])
         .output()
         .expect("Failed to execute command");
 
@@ -71,7 +81,7 @@ fn test_cli_24_hour_format() {
 #[test]
 fn test_cli_spanish() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "spanish", "-f", "exact"])
+        .args(["-l", "spanish", "-f", "exact"])
         .output()
         .expect("Failed to execute command");
 
@@ -85,7 +95,7 @@ fn test_cli_spanish() {
 #[test]
 fn test_cli_portuguese() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "portuguese", "-f", "exact"])
+        .args(["-l", "portuguese", "-f", "exact"])
         .output()
         .expect("Failed to execute command");
 
@@ -99,7 +109,7 @@ fn test_cli_portuguese() {
 #[test]
 fn test_cli_max_fuzzy() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "english", "-f", "max-fuzzy"])
+        .args(["-l", "english", "-f", "max-fuzzy"])
         .output()
         .expect("Failed to execute command");
 
@@ -116,7 +126,7 @@ fn test_cli_max_fuzzy() {
 #[test]
 fn test_cli_invalid_language() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "french"])
+        .args(["-l", "french"])
         .output()
         .expect("Failed to execute command");
 
@@ -128,7 +138,7 @@ fn test_cli_invalid_language() {
 #[test]
 fn test_cli_invalid_fuzzyness() {
     let output = Command::new(get_bin_path())
-        .args(&["-f", "super-fuzzy"])
+        .args(["-f", "super-fuzzy"])
         .output()
         .expect("Failed to execute command");
 
@@ -140,7 +150,7 @@ fn test_cli_invalid_fuzzyness() {
 #[test]
 fn test_cli_help() {
     let output = Command::new(get_bin_path())
-        .args(&["--help"])
+        .args(["--help"])
         .output()
         .expect("Failed to execute command");
 
@@ -157,7 +167,7 @@ fn test_cli_help() {
 #[test]
 fn test_cli_short_flags() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "en", "-f", "fuzzy"])
+        .args(["-l", "en", "-f", "fuzzy"])
         .output()
         .expect("Failed to execute command");
 
@@ -168,7 +178,7 @@ fn test_cli_short_flags() {
 fn test_cli_all_fuzziness_levels() {
     for level in &["exact", "fuzzy", "very-fuzzy", "max-fuzzy"] {
         let output = Command::new(get_bin_path())
-            .args(&["-f", level])
+            .args(["-f", level])
             .output()
             .expect("Failed to execute command");
 
@@ -184,7 +194,7 @@ fn test_cli_all_fuzziness_levels() {
 fn test_cli_all_languages() {
     for lang in &["english", "spanish", "portuguese"] {
         let output = Command::new(get_bin_path())
-            .args(&["-l", lang])
+            .args(["-l", lang])
             .output()
             .expect("Failed to execute command");
 
@@ -197,7 +207,7 @@ fn test_cli_all_languages() {
 #[test]
 fn test_cli_include_units_flag() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "english", "-f", "exact", "--include-units"])
+        .args(["-l", "english", "-f", "exact", "--include-units"])
         .output()
         .expect("Failed to execute command");
 
@@ -211,7 +221,7 @@ fn test_cli_include_units_flag() {
 #[test]
 fn test_cli_include_units_with_24h() {
     let output = Command::new(get_bin_path())
-        .args(&[
+        .args([
             "-l",
             "english",
             "-f",
@@ -235,7 +245,7 @@ fn test_cli_include_units_with_24h() {
 fn test_cli_include_units_all_languages() {
     for lang in &["english", "spanish", "portuguese"] {
         let output = Command::new(get_bin_path())
-            .args(&["-l", lang, "--include-units"])
+            .args(["-l", lang, "--include-units"])
             .output()
             .expect("Failed to execute command");
 

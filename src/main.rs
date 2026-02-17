@@ -4,12 +4,12 @@ use translator::{FuzzinessLevel, Language, get_translator};
 fn main() {
     let args = cli::parse_args();
 
-    let language = Language::from_str(&args.language).unwrap_or_else(|| {
+    let language = Language::parse(&args.language).unwrap_or_else(|| {
         eprintln!("Error: Unknown language '{}'", args.language);
         std::process::exit(1);
     });
 
-    let fuzziness = FuzzinessLevel::from_str(&args.fuzziness).unwrap_or_else(|| {
+    let fuzziness = FuzzinessLevel::parse(&args.fuzziness).unwrap_or_else(|| {
         eprintln!("Error: Unknown fuzziness level '{}'", args.fuzziness);
         std::process::exit(1);
     });

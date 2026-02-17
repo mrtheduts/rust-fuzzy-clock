@@ -3,30 +3,30 @@ use rust_fuzzy_clock::translator::{FuzzinessLevel, Language};
 #[test]
 fn test_language_parsing_english() {
     assert!(matches!(
-        Language::from_str("english"),
+        Language::parse("english"),
         Some(Language::English)
     ));
-    assert!(matches!(Language::from_str("en"), Some(Language::English)));
+    assert!(matches!(Language::parse("en"), Some(Language::English)));
     assert!(matches!(
-        Language::from_str("English"),
+        Language::parse("English"),
         Some(Language::English)
     ));
-    assert!(matches!(Language::from_str("EN"), Some(Language::English)));
+    assert!(matches!(Language::parse("EN"), Some(Language::English)));
 }
 
 #[test]
 fn test_language_parsing_spanish() {
     assert!(matches!(
-        Language::from_str("spanish"),
+        Language::parse("spanish"),
         Some(Language::Spanish)
     ));
-    assert!(matches!(Language::from_str("es"), Some(Language::Spanish)));
+    assert!(matches!(Language::parse("es"), Some(Language::Spanish)));
     assert!(matches!(
-        Language::from_str("español"),
+        Language::parse("español"),
         Some(Language::Spanish)
     ));
     assert!(matches!(
-        Language::from_str("SPANISH"),
+        Language::parse("SPANISH"),
         Some(Language::Spanish)
     ));
 }
@@ -34,47 +34,47 @@ fn test_language_parsing_spanish() {
 #[test]
 fn test_language_parsing_portuguese() {
     assert!(matches!(
-        Language::from_str("portuguese"),
+        Language::parse("portuguese"),
         Some(Language::Portuguese)
     ));
     assert!(matches!(
-        Language::from_str("pt"),
+        Language::parse("pt"),
         Some(Language::Portuguese)
     ));
     assert!(matches!(
-        Language::from_str("português"),
+        Language::parse("português"),
         Some(Language::Portuguese)
     ));
     assert!(matches!(
-        Language::from_str("PORTUGUESE"),
+        Language::parse("PORTUGUESE"),
         Some(Language::Portuguese)
     ));
 }
 
 #[test]
 fn test_language_parsing_invalid() {
-    assert!(Language::from_str("french").is_none());
-    assert!(Language::from_str("fr").is_none());
-    assert!(Language::from_str("").is_none());
-    assert!(Language::from_str("xxx").is_none());
+    assert!(Language::parse("french").is_none());
+    assert!(Language::parse("fr").is_none());
+    assert!(Language::parse("").is_none());
+    assert!(Language::parse("xxx").is_none());
 }
 
 #[test]
 fn test_fuzziness_parsing_valid() {
     assert!(matches!(
-        FuzzinessLevel::from_str("exact"),
+        FuzzinessLevel::parse("exact"),
         Some(FuzzinessLevel::Exact)
     ));
     assert!(matches!(
-        FuzzinessLevel::from_str("fuzzy"),
+        FuzzinessLevel::parse("fuzzy"),
         Some(FuzzinessLevel::Fuzzy)
     ));
     assert!(matches!(
-        FuzzinessLevel::from_str("very-fuzzy"),
+        FuzzinessLevel::parse("very-fuzzy"),
         Some(FuzzinessLevel::VeryFuzzy)
     ));
     assert!(matches!(
-        FuzzinessLevel::from_str("max-fuzzy"),
+        FuzzinessLevel::parse("max-fuzzy"),
         Some(FuzzinessLevel::MaxFuzzy)
     ));
 }
@@ -82,22 +82,22 @@ fn test_fuzziness_parsing_valid() {
 #[test]
 fn test_fuzziness_parsing_case_insensitive() {
     assert!(matches!(
-        FuzzinessLevel::from_str("EXACT"),
+        FuzzinessLevel::parse("EXACT"),
         Some(FuzzinessLevel::Exact)
     ));
     assert!(matches!(
-        FuzzinessLevel::from_str("Fuzzy"),
+        FuzzinessLevel::parse("Fuzzy"),
         Some(FuzzinessLevel::Fuzzy)
     ));
     assert!(matches!(
-        FuzzinessLevel::from_str("VERY-FUZZY"),
+        FuzzinessLevel::parse("VERY-FUZZY"),
         Some(FuzzinessLevel::VeryFuzzy)
     ));
 }
 
 #[test]
 fn test_fuzziness_parsing_invalid() {
-    assert!(FuzzinessLevel::from_str("approximate").is_none());
-    assert!(FuzzinessLevel::from_str("").is_none());
-    assert!(FuzzinessLevel::from_str("very fuzzy").is_none());
+    assert!(FuzzinessLevel::parse("approximate").is_none());
+    assert!(FuzzinessLevel::parse("").is_none());
+    assert!(FuzzinessLevel::parse("very fuzzy").is_none());
 }

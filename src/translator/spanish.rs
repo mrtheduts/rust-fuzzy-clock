@@ -242,13 +242,11 @@ impl SpanishTranslator {
             ),
             45 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -295,13 +293,11 @@ impl SpanishTranslator {
             ),
             38..=44 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -317,13 +313,11 @@ impl SpanishTranslator {
             }
             46..=52 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -339,13 +333,11 @@ impl SpanishTranslator {
             }
             _ => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 format!("casi {} en punto", Self::hour_number(next_hour))
             }
@@ -366,13 +358,11 @@ impl SpanishTranslator {
             23..=37 => format!("como {}{} y media", Self::hour_number(hour), hour_unit_str),
             38..=52 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -387,13 +377,11 @@ impl SpanishTranslator {
             }
             _ => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 format!("casi {} en punto", Self::hour_number(next_hour))
             }

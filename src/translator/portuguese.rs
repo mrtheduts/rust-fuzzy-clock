@@ -151,7 +151,7 @@ impl PortugueseTranslator {
     }
 
     fn get_period_suffix(is_pm: bool, hour: u32) -> &'static str {
-        if hour >= 6 && hour < 12 {
+        if (6..12).contains(&hour) {
             " da manhã"
         } else if is_pm && hour != 12 {
             " da tarde"
@@ -248,13 +248,11 @@ impl PortugueseTranslator {
             ),
             45 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -301,13 +299,11 @@ impl PortugueseTranslator {
             ),
             38..=44 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -323,13 +319,11 @@ impl PortugueseTranslator {
             }
             46..=52 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -345,13 +339,11 @@ impl PortugueseTranslator {
             }
             _ => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 format!("quase {} em ponto", Self::hour_number(next_hour))
             }
@@ -380,13 +372,11 @@ impl PortugueseTranslator {
             ),
             38..=52 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 let next_unit_str = if include_units {
                     format!(" {}", Self::hour_unit(next_hour))
@@ -401,13 +391,11 @@ impl PortugueseTranslator {
             }
             _ => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 {
-                        0
-                    } else {
-                        time.hour24 + 1
-                    }
+                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                } else if time.hour == 12 {
+                    1
                 } else {
-                    if time.hour == 12 { 1 } else { time.hour + 1 }
+                    time.hour + 1
                 };
                 format!("quase {} em ponto", Self::hour_number(next_hour))
             }

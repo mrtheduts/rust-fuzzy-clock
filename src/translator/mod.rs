@@ -13,7 +13,7 @@ pub enum FuzzinessLevel {
 }
 
 impl FuzzinessLevel {
-    pub fn from_str(s: &str) -> Option<Self> {
+    pub fn parse(s: &str) -> Option<Self> {
         match s.to_lowercase().as_str() {
             "exact" => Some(FuzzinessLevel::Exact),
             "fuzzy" => Some(FuzzinessLevel::Fuzzy),
@@ -41,7 +41,7 @@ pub enum Language {
 }
 
 impl Language {
-    pub fn from_str(s: &str) -> Option<Self> {
+    pub fn parse(s: &str) -> Option<Self> {
         match s.to_lowercase().as_str() {
             "english" | "en" => Some(Language::English),
             "spanish" | "es" | "español" => Some(Language::Spanish),
