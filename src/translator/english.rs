@@ -1,4 +1,4 @@
-use super::{TimeTranslator, FuzzynessLevel};
+use super::{TimeTranslator, FuzzinessLevel};
 use crate::time::TimeInfo;
 
 pub struct EnglishTranslator;
@@ -77,61 +77,84 @@ impl EnglishTranslator {
             Self::number_to_word(minute).to_string()
         }
     }
+    
+    fn hour_unit(n: u32) -> &'static str {
+        if n == 1 { "hour" } else { "hours" }
+    }
+    
+    fn minute_unit(n: u32) -> &'static str {
+        if n == 1 { "minute" } else { "minutes" }
+    }
 }
 
 impl TimeTranslator for EnglishTranslator {
-    fn translate(&self, time: &TimeInfo, level: FuzzynessLevel, use_24h: bool) -> String {
+    fn translate(&self, time: &TimeInfo, level: FuzzinessLevel, use_24h: bool, include_units: bool) -> String {
         match level {
-            FuzzynessLevel::Exact => self.translate_exact(time, use_24h),
-            FuzzynessLevel::Fuzzy => self.translate_fuzzy(time, use_24h),
-            FuzzynessLevel::VeryFuzzy => self.translate_very_fuzzy(time, use_24h),
-            FuzzynessLevel::MaxFuzzy => self.translate_max_fuzzy(time),
+            FuzzinessLevel::Exact => self.translate_exact(time, use_24h, include_units),
+            FuzzinessLevel::Fuzzy => self.translate_fuzzy(time, use_24h, include_units),
+            FuzzinessLevel::VeryFuzzy => self.translate_very_fuzzy(time, use_24h, include_units),
+            FuzzinessLevel::MaxFuzzy => self.translate_max_fuzzy(time),
         }
     }
 }
 
 impl EnglishTranslator {
-    fn translate_exact(&self, time: &TimeInfo, use_24h: bool) -> String {
+    fn translate_exact(&self, time: &TimeInfo, use_24h: bool, include_units: bool) -> String {
         if use_24h {
             let hour_word = Self::number_to_word(time.hour24);
             let minute_word = Self::format_minute(time.minute);
-            format!("{} {}", hour_word, minute_word)
+            if include_units {
+                format!("{} {} {} {}", 
+                    hour_word, Self::hour_unit(time.hour24),
+                    minute_word, Self::minute_unit(time.minute))
+            } else {
+                format!("{} {}", hour_word, minute_word)
+            }
         } else {
             let hour_word = Self::number_to_word(time.hour);
             let minute_word = Self::format_minute(time.minute);
             let period = if time.is_pm { "PM" } else { "AM" };
-            format!("{} {} {}", hour_word, minute_word, period)
+            if include_units {
+                format!("{} {} {} {} {}", 
+                    hour_word, Self::hour_unit(time.hour),
+                    minute_word, Self::minute_unit(time.minute), period)
+            } else {
+                format!("{} {} {}", hour_word, minute_word, period)
+            }
         }
     }
     
-    fn translate_fuzzy(&self, time: &TimeInfo, use_24h: bool) -> String {
+    fn translate_fuzzy(&self, time: &TimeInfo, use_24h: bool, include_units: bool) -> String {
         let hour = if use_24h { time.hour24 } else { time.hour };
         let period = if use_24h { "" } else if time.is_pm { " PM" } else { " AM" };
+        let hour_unit_str = if include_units { format!(" {}", Self::hour_unit(hour)) } else { String::new() };
         
         match time.minute {
             0 => format!("{} o'clock", Self::number_to_word(hour)),
-            15 => format!("quarter past {}{}", Self::number_to_word(hour), period),
-            30 => format!("half past {}{}", Self::number_to_word(hour), period),
+            15 => format!("quarter past {}{}{}", Self::number_to_word(hour), hour_unit_str, period),
+            30 => format!("half past {}{}{}", Self::number_to_word(hour), hour_unit_str, period),
             45 => {
                 let next_hour = if use_24h {
                     if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
                 } else {
                     if time.hour == 12 { 1 } else { time.hour + 1 }
                 };
-                format!("quarter to {}{}", Self::number_to_word(next_hour), period)
+                let next_unit_str = if include_units { format!(" {}", Self::hour_unit(next_hour)) } else { String::new() };
+                format!("quarter to {}{}{}", Self::number_to_word(next_hour), next_unit_str, period)
             },
-            1..=7 => format!("{} past {}{}", Self::number_to_word(time.minute), Self::number_to_word(hour), period),
-            8..=14 => format!("about quarter past {}{}", Self::number_to_word(hour), period),
-            16..=22 => format!("about twenty past {}{}", Self::number_to_word(hour), period),
-            23..=29 => format!("almost half past {}{}", Self::number_to_word(hour), period),
-            31..=37 => format!("about half past {}{}", Self::number_to_word(hour), period),
+            1..=7 => format!("{} past {}{}{}", Self::number_to_word(time.minute), Self::number_to_word(hour), hour_unit_str, period),
+            8..=14 => format!("about quarter past {}{}{}", Self::number_to_word(hour), hour_unit_str, period),
+            16..=22 => format!("about twenty past {}{}{}", Self::number_to_word(hour), hour_unit_str, period),
+            23..=29 => format!("almost half past {}{}{}", Self::number_to_word(hour), hour_unit_str, period),
+            31..=37 => format!("about half past {}{}{}", Self::number_to_word(hour), hour_unit_str, period),
             38..=44 => {
                 let next_hour = if use_24h {
                     if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
                 } else {
                     if time.hour == 12 { 1 } else { time.hour + 1 }
                 };
-                format!("almost quarter to {}{}", Self::number_to_word(next_hour), period)
+                let next_unit_str = if include_units { format!(" {}", Self::hour_unit(next_hour)) } else { String::new() };
+                format!("almost quarter to {}{}{}", Self::number_to_word(next_hour), next_unit_str, period)
             },
             46..=52 => {
                 let next_hour = if use_24h {
@@ -139,7 +162,8 @@ impl EnglishTranslator {
                 } else {
                     if time.hour == 12 { 1 } else { time.hour + 1 }
                 };
-                format!("about quarter to {}{}", Self::number_to_word(next_hour), period)
+                let next_unit_str = if include_units { format!(" {}", Self::hour_unit(next_hour)) } else { String::new() };
+                format!("about quarter to {}{}{}", Self::number_to_word(next_hour), next_unit_str, period)
             },
             _ => {
                 let next_hour = if use_24h {
@@ -152,20 +176,22 @@ impl EnglishTranslator {
         }
     }
     
-    fn translate_very_fuzzy(&self, time: &TimeInfo, use_24h: bool) -> String {
+    fn translate_very_fuzzy(&self, time: &TimeInfo, use_24h: bool, include_units: bool) -> String {
         let hour = if use_24h { time.hour24 } else { time.hour };
+        let hour_unit_str = if include_units { format!(" {}", Self::hour_unit(hour)) } else { String::new() };
         
         match time.minute {
-            0..=7 => format!("{} o'clock", Self::number_to_word(hour)),
-            8..=22 => format!("about quarter past {}", Self::number_to_word(hour)),
-            23..=37 => format!("about half past {}", Self::number_to_word(hour)),
+            0..=7 => format!("{}{} o'clock", Self::number_to_word(hour), hour_unit_str),
+            8..=22 => format!("about quarter past {}{}", Self::number_to_word(hour), hour_unit_str),
+            23..=37 => format!("about half past {}{}", Self::number_to_word(hour), hour_unit_str),
             38..=52 => {
                 let next_hour = if use_24h {
                     if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
                 } else {
                     if time.hour == 12 { 1 } else { time.hour + 1 }
                 };
-                format!("about quarter to {}", Self::number_to_word(next_hour))
+                let next_unit_str = if include_units { format!(" {}", Self::hour_unit(next_hour)) } else { String::new() };
+                format!("about quarter to {}{}", Self::number_to_word(next_hour), next_unit_str)
             },
             _ => {
                 let next_hour = if use_24h {

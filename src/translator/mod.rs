@@ -5,27 +5,27 @@ pub mod portuguese;
 use crate::time::TimeInfo;
 
 #[derive(Debug, Clone, Copy)]
-pub enum FuzzynessLevel {
+pub enum FuzzinessLevel {
     Exact,
     Fuzzy,
     VeryFuzzy,
     MaxFuzzy,
 }
 
-impl FuzzynessLevel {
+impl FuzzinessLevel {
     pub fn from_str(s: &str) -> Option<Self> {
         match s.to_lowercase().as_str() {
-            "exact" => Some(FuzzynessLevel::Exact),
-            "fuzzy" => Some(FuzzynessLevel::Fuzzy),
-            "very-fuzzy" => Some(FuzzynessLevel::VeryFuzzy),
-            "max-fuzzy" => Some(FuzzynessLevel::MaxFuzzy),
+            "exact" => Some(FuzzinessLevel::Exact),
+            "fuzzy" => Some(FuzzinessLevel::Fuzzy),
+            "very-fuzzy" => Some(FuzzinessLevel::VeryFuzzy),
+            "max-fuzzy" => Some(FuzzinessLevel::MaxFuzzy),
             _ => None,
         }
     }
 }
 
 pub trait TimeTranslator {
-    fn translate(&self, time: &TimeInfo, level: FuzzynessLevel, use_24h: bool) -> String;
+    fn translate(&self, time: &TimeInfo, level: FuzzinessLevel, use_24h: bool, include_units: bool) -> String;
 }
 
 pub enum Language {

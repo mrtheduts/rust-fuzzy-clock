@@ -1,5 +1,5 @@
 use rust_fuzzy_clock::{cli, time, translator};
-use translator::{FuzzynessLevel, Language, get_translator};
+use translator::{FuzzinessLevel, Language, get_translator};
 
 fn main() {
     let args = cli::parse_args();
@@ -10,15 +10,15 @@ fn main() {
             std::process::exit(1);
         });
     
-    let fuzzyness = FuzzynessLevel::from_str(&args.fuzzyness)
+    let fuzziness = FuzzinessLevel::from_str(&args.fuzziness)
         .unwrap_or_else(|| {
-            eprintln!("Error: Unknown fuzzyness level '{}'", args.fuzzyness);
+            eprintln!("Error: Unknown fuzziness level '{}'", args.fuzziness);
             std::process::exit(1);
         });
     
     let current_time = time::get_current_time();
     let translator = get_translator(language);
-    let fuzzy_time = translator.translate(&current_time, fuzzyness, args.hour_24);
+    let fuzzy_time = translator.translate(&current_time, fuzziness, args.hour_24, args.include_units);
     
     println!("{}", fuzzy_time);
 }
