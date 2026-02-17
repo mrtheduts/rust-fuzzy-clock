@@ -1,12 +1,7 @@
 use std::process::Command;
 
 fn get_bin_path() -> String {
-    // Use the compiled binary from target directory
-    if cfg!(debug_assertions) {
-        "/data/data/com.termux/files/usr/tmp/rust-fuzzy-clock-build/debug/rust-fuzzy-clock".to_string()
-    } else {
-        "/data/data/com.termux/files/usr/tmp/rust-fuzzy-clock-build/release/rust-fuzzy-clock".to_string()
-    }
+    env!("CARGO_BIN_EXE_rust-fuzzy_clock").to_string()
 }
 
 #[test]
