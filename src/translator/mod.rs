@@ -1,6 +1,6 @@
 pub mod english;
-pub mod spanish;
 pub mod portuguese;
+pub mod spanish;
 
 use crate::time::TimeInfo;
 
@@ -25,7 +25,13 @@ impl FuzzinessLevel {
 }
 
 pub trait TimeTranslator {
-    fn translate(&self, time: &TimeInfo, level: FuzzinessLevel, use_24h: bool, include_units: bool) -> String;
+    fn translate(
+        &self,
+        time: &TimeInfo,
+        level: FuzzinessLevel,
+        use_24h: bool,
+        include_units: bool,
+    ) -> String;
 }
 
 pub enum Language {

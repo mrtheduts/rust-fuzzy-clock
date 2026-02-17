@@ -1,31 +1,30 @@
-use std::process::Command;
 use std::path::PathBuf;
+use std::process::Command;
 
 fn get_bin_path() -> PathBuf {
     // Try the cargo-provided environment variable first (for CI/CD)
     if let Ok(path) = std::env::var("CARGO_BIN_EXE_rust_fuzzy_clock") {
         return PathBuf::from(path);
     }
-    
+
     // Fallback to target directory relative to manifest (for local builds)
-    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR")
-        .expect("CARGO_MANIFEST_DIR not set");
-    
+    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
+
     // Check if we're using a custom CARGO_TARGET_DIR
-    let target_dir = std::env::var("CARGO_TARGET_DIR")
-        .unwrap_or_else(|_| format!("{}/target", manifest_dir));
-    
+    let target_dir =
+        std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| format!("{}/target", manifest_dir));
+
     // Try debug build first, then release
     let debug_path = PathBuf::from(&target_dir).join("debug/rust-fuzzy-clock");
     if debug_path.exists() {
         return debug_path;
     }
-    
+
     let release_path = PathBuf::from(&target_dir).join("release/rust-fuzzy-clock");
     if release_path.exists() {
         return release_path;
     }
-    
+
     panic!("Could not find rust-fuzzy-clock binary in {:?}", target_dir);
 }
 
@@ -34,10 +33,10 @@ fn test_cli_default_options() {
     let output = Command::new(get_bin_path())
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     // Should contain AM or PM for 12-hour format
     assert!(stdout.contains("AM") || stdout.contains("PM"));
 }
@@ -48,7 +47,7 @@ fn test_cli_english_exact() {
         .args(&["-l", "english", "-f", "exact"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(stdout.contains("AM") || stdout.contains("PM"));
@@ -60,10 +59,10 @@ fn test_cli_24_hour_format() {
         .args(&["-l", "english", "-f", "exact", "--24-hour"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     // Should NOT contain AM or PM in 24-hour format
     assert!(!stdout.contains("AM"));
     assert!(!stdout.contains("PM"));
@@ -75,10 +74,10 @@ fn test_cli_spanish() {
         .args(&["-l", "spanish", "-f", "exact"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     // Spanish output should exist (not empty)
     assert!(!stdout.trim().is_empty());
 }
@@ -89,10 +88,10 @@ fn test_cli_portuguese() {
         .args(&["-l", "portuguese", "-f", "exact"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     // Portuguese output should exist (not empty)
     assert!(!stdout.trim().is_empty());
 }
@@ -103,17 +102,14 @@ fn test_cli_max_fuzzy() {
         .args(&["-l", "english", "-f", "max-fuzzy"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
     let result = stdout.trim();
-    
+
     // Should be one of the time periods
     assert!(
-        result == "morning" || 
-        result == "afternoon" || 
-        result == "evening" || 
-        result == "night"
+        result == "morning" || result == "afternoon" || result == "evening" || result == "night"
     );
 }
 
@@ -123,7 +119,7 @@ fn test_cli_invalid_language() {
         .args(&["-l", "french"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(!output.status.success());
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(stderr.contains("Unknown language"));
@@ -135,7 +131,7 @@ fn test_cli_invalid_fuzzyness() {
         .args(&["-f", "super-fuzzy"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(!output.status.success());
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(stderr.contains("Unknown fuzziness level"));
@@ -147,10 +143,10 @@ fn test_cli_help() {
         .args(&["--help"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     assert!(stdout.contains("fuzzy clock"));
     assert!(stdout.contains("--language"));
     assert!(stdout.contains("--fuzziness"));
@@ -164,7 +160,7 @@ fn test_cli_short_flags() {
         .args(&["-l", "en", "-f", "fuzzy"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
 }
 
@@ -175,8 +171,12 @@ fn test_cli_all_fuzziness_levels() {
             .args(&["-f", level])
             .output()
             .expect("Failed to execute command");
-        
-        assert!(output.status.success(), "Failed for fuzziness level: {}", level);
+
+        assert!(
+            output.status.success(),
+            "Failed for fuzziness level: {}",
+            level
+        );
     }
 }
 
@@ -187,7 +187,7 @@ fn test_cli_all_languages() {
             .args(&["-l", lang])
             .output()
             .expect("Failed to execute command");
-        
+
         assert!(output.status.success(), "Failed for language: {}", lang);
     }
 }
@@ -200,10 +200,10 @@ fn test_cli_include_units_flag() {
         .args(&["-l", "english", "-f", "exact", "--include-units"])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     // Should contain unit labels
     assert!(stdout.contains("hour") || stdout.contains("minute"));
 }
@@ -211,13 +211,20 @@ fn test_cli_include_units_flag() {
 #[test]
 fn test_cli_include_units_with_24h() {
     let output = Command::new(get_bin_path())
-        .args(&["-l", "english", "-f", "exact", "--24-hour", "--include-units"])
+        .args(&[
+            "-l",
+            "english",
+            "-f",
+            "exact",
+            "--24-hour",
+            "--include-units",
+        ])
         .output()
         .expect("Failed to execute command");
-    
+
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     // Should contain units but not AM/PM
     assert!(stdout.contains("hour") || stdout.contains("minute"));
     assert!(!stdout.contains("AM"));
@@ -231,7 +238,11 @@ fn test_cli_include_units_all_languages() {
             .args(&["-l", lang, "--include-units"])
             .output()
             .expect("Failed to execute command");
-        
-        assert!(output.status.success(), "Failed for language with units: {}", lang);
+
+        assert!(
+            output.status.success(),
+            "Failed for language with units: {}",
+            lang
+        );
     }
 }

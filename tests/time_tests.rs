@@ -8,7 +8,7 @@ fn create_time_info(hour24: u32, minute: u32) -> TimeInfo {
         13..=23 => hour24 - 12,
         _ => hour24,
     };
-    
+
     TimeInfo {
         hour: hour12,
         hour24,
@@ -63,7 +63,7 @@ fn test_hour_boundaries() {
     let time11 = create_time_info(11, 59);
     assert_eq!(time11.hour, 11);
     assert_eq!(time11.is_pm, false);
-    
+
     let time12 = create_time_info(12, 0);
     assert_eq!(time12.hour, 12);
     assert_eq!(time12.is_pm, true);
