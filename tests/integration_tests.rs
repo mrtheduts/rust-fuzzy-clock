@@ -32,10 +32,7 @@ fn get_bin_path() -> PathBuf {
         return release_path;
     }
 
-    panic!(
-        "Could not find {} binary in {:?}",
-        binary_name, target_dir
-    );
+    panic!("Could not find {} binary in {:?}", binary_name, target_dir);
 }
 
 #[test]

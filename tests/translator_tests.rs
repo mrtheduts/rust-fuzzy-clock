@@ -37,10 +37,7 @@ fn test_language_parsing_portuguese() {
         Language::parse("portuguese"),
         Some(Language::Portuguese)
     ));
-    assert!(matches!(
-        Language::parse("pt"),
-        Some(Language::Portuguese)
-    ));
+    assert!(matches!(Language::parse("pt"), Some(Language::Portuguese)));
     assert!(matches!(
         Language::parse("português"),
         Some(Language::Portuguese)

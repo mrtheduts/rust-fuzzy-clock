@@ -242,7 +242,11 @@ impl SpanishTranslator {
             ),
             45 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                    if time.hour24 == 23 {
+                        0
+                    } else {
+                        time.hour24 + 1
+                    }
                 } else if time.hour == 12 {
                     1
                 } else {
@@ -293,7 +297,11 @@ impl SpanishTranslator {
             ),
             38..=44 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                    if time.hour24 == 23 {
+                        0
+                    } else {
+                        time.hour24 + 1
+                    }
                 } else if time.hour == 12 {
                     1
                 } else {
@@ -313,7 +321,11 @@ impl SpanishTranslator {
             }
             46..=52 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                    if time.hour24 == 23 {
+                        0
+                    } else {
+                        time.hour24 + 1
+                    }
                 } else if time.hour == 12 {
                     1
                 } else {
@@ -333,7 +345,11 @@ impl SpanishTranslator {
             }
             _ => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                    if time.hour24 == 23 {
+                        0
+                    } else {
+                        time.hour24 + 1
+                    }
                 } else if time.hour == 12 {
                     1
                 } else {
@@ -358,7 +374,11 @@ impl SpanishTranslator {
             23..=37 => format!("como {}{} y media", Self::hour_number(hour), hour_unit_str),
             38..=52 => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                    if time.hour24 == 23 {
+                        0
+                    } else {
+                        time.hour24 + 1
+                    }
                 } else if time.hour == 12 {
                     1
                 } else {
@@ -377,7 +397,11 @@ impl SpanishTranslator {
             }
             _ => {
                 let next_hour = if use_24h {
-                    if time.hour24 == 23 { 0 } else { time.hour24 + 1 }
+                    if time.hour24 == 23 {
+                        0
+                    } else {
+                        time.hour24 + 1
+                    }
                 } else if time.hour == 12 {
                     1
                 } else {
