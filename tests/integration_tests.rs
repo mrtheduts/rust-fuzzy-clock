@@ -1,7 +1,32 @@
 use std::process::Command;
+use std::path::PathBuf;
 
-fn get_bin_path() -> String {
-    env!("CARGO_BIN_EXE_rust-fuzzy_clock").to_string()
+fn get_bin_path() -> PathBuf {
+    // Try the cargo-provided environment variable first (for CI/CD)
+    if let Ok(path) = std::env::var("CARGO_BIN_EXE_rust_fuzzy_clock") {
+        return PathBuf::from(path);
+    }
+    
+    // Fallback to target directory relative to manifest (for local builds)
+    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR")
+        .expect("CARGO_MANIFEST_DIR not set");
+    
+    // Check if we're using a custom CARGO_TARGET_DIR
+    let target_dir = std::env::var("CARGO_TARGET_DIR")
+        .unwrap_or_else(|_| format!("{}/target", manifest_dir));
+    
+    // Try debug build first, then release
+    let debug_path = PathBuf::from(&target_dir).join("debug/rust-fuzzy-clock");
+    if debug_path.exists() {
+        return debug_path;
+    }
+    
+    let release_path = PathBuf::from(&target_dir).join("release/rust-fuzzy-clock");
+    if release_path.exists() {
+        return release_path;
+    }
+    
+    panic!("Could not find rust-fuzzy-clock binary in {:?}", target_dir);
 }
 
 #[test]
