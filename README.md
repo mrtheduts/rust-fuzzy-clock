@@ -139,7 +139,6 @@ Each language translator implements all four fuzzyness levels independently.
 
 - Additional languages (French, German, Italian, etc.)
 - Timezone override option
-- 24-hour format support
 - Configurable time period ranges for max-fuzzy mode
 - Color output support
 
@@ -147,6 +146,29 @@ Each language translator implements all four fuzzyness levels independently.
 
 - `clap`: CLI argument parsing
 - `chrono`: Timezone-aware date/time handling
+
+## Testing
+
+The project includes comprehensive automated tests:
+
+```bash
+# Run all tests
+cargo test
+
+# Run with output
+cargo test -- --nocapture
+
+# Run specific test file
+cargo test --test english_tests
+```
+
+**Test Coverage:**
+- **50 total tests** covering all functionality
+- **Unit tests**: Time module, all translators, coordinator
+- **Integration tests**: Full CLI workflows, error handling
+- **Edge cases**: Midnight, noon, hour boundaries, format transitions
+
+All tests run in < 1 second.
 
 ## License
 

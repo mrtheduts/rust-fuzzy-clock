@@ -1,7 +1,4 @@
-mod cli;
-mod time;
-mod translator;
-
+use rust_fuzzy_clock::{cli, time, translator};
 use translator::{FuzzynessLevel, Language, get_translator};
 
 fn main() {
